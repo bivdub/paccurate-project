@@ -1,24 +1,38 @@
 <template>
   <div>
-    <div>{{ data }}</div>
-    <div v-html="svg" class="figure-container"></div>
+    <div class="btn" @click="makeCall">Make Call</div>
+    <div v-if="svg">
+      <div v-html="svg" class="figure-container"></div>
+    </div>
+    <div>{{ items }}</div>
   </div>
 </template>
 
 <script setup>
-const data = await $fetch('/api/paccurate', {
-  method: 'POST',
-  body: { testo: 'hey gurl' }
-});
+const { items } = useItems();
+const svg = ref('');
 
-const svg = data.svgs;
+const makeCall = async () => {
+  console.log(items.value[0]);
+  const data = await $fetch('/api/paccurate', {
+    method: 'POST',
+    body: {
+      itemSets: [
+        // JSON.parse(JSON.stringify(items.value[0]))
+        JSON.parse(JSON.stringify(items.value[1]))
+      ],
+      boxTypes: [
+        { weightMax: 150, name: '5x6x8', dimensions: { x: 5, y: 6, z: 8 } }
+      ],
+      includeScripts: false
+    }
+  });
+  console.log(data);
+  svg.value = data.svgs;
+};
 </script>
 
 <style lang="scss">
-body {
-  background-color: beige;
-}
-
 .volume-line {
   stroke: #666;
   stroke-dasharray: 2, 1;
