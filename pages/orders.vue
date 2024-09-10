@@ -1,13 +1,17 @@
 <template>
-  <div class="flex flex-row h-full">
-    <div class="order-list flex-column w-80 flex-wrap">
+  <div class="flex flex-row min-h-screen h-full">
+    <div class="order-list flex-column w-80 mr-0">
       <div v-for="order in orders" :key="order">
-        <div class="" @click="selectOrder(order.packUuid)">
+        <div
+          class="py-5 hover:cursor-pointer"
+          @click="selectOrder(order.packUuid)"
+        >
           {{ order.built }}
         </div>
+        <div class="divider py-0 my-0"></div>
       </div>
     </div>
-    <div class="divider lg:divider-horizontal"></div>
+    <div class="divider divider-horizontal px-0 mx-0"></div>
     <div class="order-details flex-column w-1/2 flex-grow px-5">
       <h1 class="font-extrabold text-4xl text-center py-8">Order Details</h1>
       <div v-if="selectedOrder.packUuid" class="flex flex-row">
@@ -166,7 +170,7 @@ const selectOrder = (orderId: string) => {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .volume-line {
   stroke: #666;
   stroke-dasharray: 2, 1;

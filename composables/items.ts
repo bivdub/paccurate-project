@@ -4,7 +4,7 @@ export const useItems = () => {
     return [
       {
         name: 'Tomatoes',
-        refId: 0,
+        refId: 1234,
         color: 'tomato',
         weight: 2,
         dimensions: { x: 5, y: 6, z: 4 },
@@ -14,7 +14,7 @@ export const useItems = () => {
       },
       {
         name: 'Olives',
-        refId: 1,
+        refId: 2345,
         color: 'olive',
         weight: 4,
         sequence: '',
@@ -24,7 +24,7 @@ export const useItems = () => {
       },
       {
         name: 'Papayas',
-        refId: 2,
+        refId: 3456,
         color: 'papayawhip',
         weight: 2,
         sequence: '',

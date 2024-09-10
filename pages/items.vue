@@ -16,14 +16,16 @@
       <ItemCard
         :item="blankItem"
         :create="true"
+        :alpha-id="generateId()"
         class="p-5 h-full w-64"
         @update="updateList"
       ></ItemCard>
       <ItemCard
         v-for="item in state.listItems"
-        :key="item.refId"
+        :key="item"
         :item="item"
         :create="false"
+        :alpha-id="generateId()"
         class="p-5 w-64"
         @update="updateList"
       >
@@ -73,6 +75,16 @@ const filterItems = () => {
 const updateList = () => {
   state.listItems = items.value;
 };
+
+function generateId() {
+  const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let id = '';
+  for (let i = 0; i < 10; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    id += characters[randomIndex];
+  }
+  return id;
+}
 </script>
 
 <style></style>

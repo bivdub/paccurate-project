@@ -4,7 +4,7 @@ export const useBoxes = () => {
     return [
       {
         name: '20 X 20 X 20',
-        refId: 0,
+        refId: 5678,
         price: 30,
         weightTare: 1,
         weightMax: 50,
@@ -16,7 +16,7 @@ export const useBoxes = () => {
       },
       {
         name: '10 X 20 X 30',
-        refId: 1,
+        refId: 7654,
         price: 30,
         weightTare: 1,
         weightMax: 75,
@@ -28,7 +28,7 @@ export const useBoxes = () => {
       },
       {
         name: '40 X 20 X 20',
-        refId: 2,
+        refId: 6543,
         price: 30,
         weightTare: 1,
         weightMax: 100,

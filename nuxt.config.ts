@@ -7,5 +7,6 @@ export default defineNuxtConfig({
   colorMode: {
     preference: 'lemonade',
     dataValue: 'theme'
-  }
+  },
+  ssr: false
 });
