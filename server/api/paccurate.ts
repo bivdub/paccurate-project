@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  let postBody = {
+  let postBody: any = {
     requestId: generateId(),
     orderId: generateId(),
     layFlat: body.options.layFlat,
@@ -15,8 +15,6 @@ export default defineEventHandler(async (event) => {
   } else {
     postBody.boxTypeSets = [body.options.boxTypeSet];
   }
-
-  console.log(postBody);
 
   const response = await $fetch('https://api.paccurate.io/', {
     method: 'POST',
