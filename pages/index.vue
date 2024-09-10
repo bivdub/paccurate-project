@@ -1,34 +1,216 @@
 <template>
-  <div>
-    <div class="btn" @click="makeCall">Make Call</div>
-    <div v-if="svg">
-      <div v-html="svg" class="figure-container"></div>
+  <div class="container mx-auto">
+    <div class="flex flex-col items-center">
+      <div class="flex flex-row py-5">
+        <div class="font-extrabold text-4xl">Create Order</div>
+      </div>
+      <div class="flex flex-row justify-around w-full">
+        <div class="flex flex-col w-1/4 items-start">
+          <div class="text-2xl font-extrabold">Order Options</div>
+          <label class="form-control w-full">
+            <div class="label pb-0">
+              <span class="text-md">Box Types</span>
+              <span class="label-text-alt"
+                >The set of boxes available to pack the order</span
+              >
+            </div>
+            <select
+              v-model="order.boxTypeSet"
+              class="select w-full select-bordered max-w-xs mt-4"
+            >
+              <option v-for="boxes in boxTypes" :key="boxes">
+                {{ boxes }}
+              </option>
+            </select>
+          </label>
+
+          <div class="form-control w-full">
+            <label class="label cursor-pointer">
+              <span class="label-text"
+                ><strong>Lay Flat</strong> - Whether all items in order should
+                be laid flat</span
+              >
+            </label>
+            <input
+              type="checkbox"
+              class="toggle toggle-primary"
+              :checked="order.layFlat"
+            />
+          </div>
+
+          <div class="form-control w-full">
+            <label class="label cursor-pointer">
+              <span class="label-text"
+                ><strong>Interlock</strong> - alternates orientation by layer
+                when laying flat to inprove stability</span
+              >
+            </label>
+            <input
+              type="checkbox"
+              class="toggle toggle-primary"
+              :checked="order.layFlat"
+            />
+          </div>
+
+          <div class="form-control w-full">
+            <label class="label cursor-pointer">
+              <span class="label-text"
+                ><strong>Corners</strong> - Only pack items at corner points -
+                (optimal)</span
+              >
+            </label>
+            <input
+              type="checkbox"
+              class="toggle toggle-primary"
+              :checked="order.corners"
+            />
+          </div>
+
+          <div class="flex flex-row mt-5">
+            <button
+              class="btn btn-primary"
+              @click="makeCall"
+              name="Submit Order"
+            >
+              Submit Order
+            </button>
+          </div>
+        </div>
+        <div class="flex flex-col w-3/4 pl-10">
+          <div class="text-2xl font-extrabold">Order Items</div>
+          <table class="table table-auto table-zebra">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Quantity</th>
+                <th>ID</th>
+                <th>Weight</th>
+                <th>Location</th>
+                <th>Dimensions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <button
+                    :disabled="!newItem.name"
+                    @click="addItem"
+                    class="btn btn-primary"
+                  >
+                    Add
+                  </button>
+                </td>
+                <td>
+                  <select
+                    v-model="newItem"
+                    class="select w-full select-bordered max-w-xs"
+                    name="addItems"
+                  >
+                    <option v-for="item in items" :key="item" :value="item">
+                      {{ item.name || item.refId }}
+                    </option>
+                  </select>
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    v-model="newItem.quantity"
+                    class="input input-bordered w-20"
+                  />
+                </td>
+                <td>{{ newItem.refId }}</td>
+                <td>{{ newItem.weight }}</td>
+                <td>{{ newItem.sequence }}</td>
+                <td>
+                  <div v-if="newItem.dimensions">
+                    {{ newItem?.dimensions.x }} X {{ newItem?.dimensions.y }} X
+                    {{ newItem?.dimensions.z }}
+                  </div>
+                </td>
+              </tr>
+              <tr v-for="item in orderItems" :key="item.refId">
+                <td></td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.refId }}</td>
+                <td>{{ item.weight }}</td>
+                <td>{{ item.sequence }}</td>
+                <td>
+                  <div v-if="item.dimensions">
+                    {{ item.dimensions.x }} X {{ item.dimensions.y }} X
+                    {{ item.dimensions.z }}
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-    <div>{{ items }}</div>
   </div>
 </template>
 
 <script setup>
+import { set } from '~/node_modules/nuxt/dist/app/compat/capi';
+
 const { items } = useItems();
-const svg = ref('');
+const { boxes } = useBoxes();
+const { orders, setOrder } = useOrders();
+const order = ref({
+  boxTypeSet: 'custom',
+  layFlat: false,
+  interlock: false,
+  corners: true
+});
+const blankItem = {
+  name: '',
+  refId: '',
+  color: '',
+  weight: 0,
+  sequence: '',
+  dimensions: { x: 0, y: 0, z: 0 },
+  centerOfMass: { x: 0, y: 0, z: 0 },
+  quantity: 1
+};
+
+const newItem = ref(blankItem);
+
+const boxTypes = ['custom', 'fedex', 'usps', 'pallet'];
+const orderItems = ref([]);
+const orderBoxes = ref([]);
+
+const orderDisabled = computed(() => {
+  return orderItems.value.length < 1;
+});
+
+const addItem = () => {
+  orderItems.value.push(Object.assign({}, newItem.value));
+  newItem.value = blankItem;
+};
 
 const makeCall = async () => {
-  console.log(items.value[0]);
   const data = await $fetch('/api/paccurate', {
     method: 'POST',
     body: {
-      itemSets: [
-        // JSON.parse(JSON.stringify(items.value[0]))
-        JSON.parse(JSON.stringify(items.value[1]))
-      ],
-      boxTypes: [
-        { weightMax: 150, name: '5x6x8', dimensions: { x: 5, y: 6, z: 8 } }
-      ],
-      includeScripts: false
+      options: order.value,
+      itemSets: orderItems.value,
+      boxes: boxes.value
     }
-  });
-  console.log(data);
-  svg.value = data.svgs;
+  })
+    .then(async (data) => {
+      await setOrder(data);
+
+      await navigateTo({
+        path: '/orders',
+        query: {
+          order: data.packUuid
+        }
+      });
+    })
+    .catch((err) => {
+      alert(err);
+    });
 };
 </script>
 

@@ -1,20 +1,10 @@
+import type { Item } from '~/types/types';
 export const useItems = () => {
-  type Item = {
-    name: String;
-    refId: String;
-    color: String;
-    weight: Number;
-    dimensions: { x: Number; y: Number; z: Number };
-    sequence: String;
-    centerOfMass: { x: Number; y: Number; z: Number };
-    quantity: Number;
-  };
-
   const items = useState<Item[]>('items', () => {
     return [
       {
         name: 'Tomatoes',
-        refId: 'tiSSQKX0ualKgZ3rXyxo',
+        refId: 0,
         color: 'tomato',
         weight: 2,
         dimensions: { x: 5, y: 6, z: 4 },
@@ -24,7 +14,7 @@ export const useItems = () => {
       },
       {
         name: 'Olives',
-        refId: 'jd275iV6R59DyzKoJ1UD',
+        refId: 1,
         color: 'olive',
         weight: 4,
         sequence: '',
@@ -34,8 +24,8 @@ export const useItems = () => {
       },
       {
         name: 'Papayas',
-        refId: 'pCk9EGl7C5psWLxejv14',
-        color: 'papaya',
+        refId: 2,
+        color: 'papayawhip',
         weight: 2,
         sequence: '',
         dimensions: { x: 2, y: 6, z: 6 },
@@ -53,21 +43,19 @@ export const useItems = () => {
       items.value[itemIndex] = item;
     } else {
       item.refId = generateId();
-      console.log(item);
       items.value.push(item);
     }
-    console.log(items.value);
   };
 
-  const generateId = () => {
-    const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXY';
+  function generateId() {
+    const characters = '1234567890';
     let id = '';
     for (let i = 0; i < 10; i++) {
       const randomIndex = Math.floor(Math.random() * characters.length);
       id += characters[randomIndex];
     }
-    return id;
-  };
+    return Number(id);
+  }
 
   return { items, setItem };
 };

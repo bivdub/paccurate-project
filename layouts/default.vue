@@ -5,7 +5,8 @@
       <div class="navbar-center lg:flex">
         <ul class="menu menu-horizontal">
           <NuxtLink to="/" class="btn btn-ghost">Call Api</NuxtLink>
-          <NuxtLink to="/items" class="btn btn-ghost">Add Items</NuxtLink>
+          <NuxtLink to="/items" class="btn btn-ghost">Inventory</NuxtLink>
+          <NuxtLink to="/orders" class="btn btn-ghost">Orders</NuxtLink>
         </ul>
       </div>
       <div class="navbar-end"></div>

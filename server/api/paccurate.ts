@@ -1,15 +1,70 @@
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
+  let sampleBody = {
+    itemSets: [
+      {
+        refId: 0,
+        color: 'tomato',
+        weight: 2,
+        dimensions: {
+          x: 5,
+          y: 6,
+          z: 4
+        },
+        quantity: 1
+      }
+    ],
+    boxTypes: [
+      {
+        weightMax: 150,
+        name: '5x6x8',
+        dimensions: {
+          x: 5,
+          y: 6,
+          z: 8
+        }
+      }
+    ],
+    includeScripts: false
+  };
+
+  let postBody = {
+    // requestId: generateId(),
+    // orderId: generateId(),
+    // layFlat: body.options.layFlat,
+    // interlock: body.options.interlock,
+    // corners: body.options.corners,
+    itemSets: body.itemSets,
+    includeScripts: false
+  };
+
+  if (body.options.boxTypeSet === 'custom') {
+    postBody.boxTypes = body.boxes;
+  } else {
+    postBody.boxTypeSets = [body.options.boxTypeSet];
+  }
 
   const response = await $fetch('https://api.paccurate.io/', {
     method: 'POST',
     headers: {
-      authorization: 'apikey ' + process.env.API_KEY
+      authorization: 'apikey ' + process.env.REAL_API_KEY
     },
-    body: body
+    body: postBody
+  }).catch((err) => {
+    console.log(err);
   });
 
   return response;
+
+  function generateId() {
+    const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXY';
+    let id = '';
+    for (let i = 0; i < 10; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      id += characters[randomIndex];
+    }
+    return id;
+  }
 
   // return {
   //   boxTypeChoiceGoalUsed: 'lowest-cost',

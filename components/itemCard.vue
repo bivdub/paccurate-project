@@ -3,7 +3,7 @@
     <div
       v-if="!create"
       class="card shadow-xl bg-primary text-center p-5 flex flex-col hover:bg-secondary hover:cursor-pointer"
-      :onclick="item.refId + '_modal.showModal()'"
+      :onclick="item.name + '_modal.showModal()'"
     >
       <div>
         <h2 class="text-2xl">{{ item?.name || item.refId }}</h2>
@@ -23,9 +23,8 @@
         <h2 class="text-2xl">Create New Item</h2>
       </div>
     </div>
-    <dialog ref="itemModal" :id="item.refId + '_modal'" class="modal mx-auto">
+    <dialog ref="itemModal" :id="item.name + '_modal'" class="modal mx-auto">
       <div class="modal-box bg-slate-100 w-2/3 max-w-none px-10">
-        {{ itemModal }}
         <h1 class="text-2xl font-bold text-center py-3 pb-8">
           {{ item.name || item.refId }}
         </h1>
@@ -79,7 +78,7 @@
                 >
               </div>
               <input
-                type="text"
+                type="number"
                 :disabled="!editMode"
                 v-model="instanceItem.weight"
                 placeholder="Enter Color"
@@ -246,10 +245,6 @@ const instanceItem = ref({});
 const emit = defineEmits(['update']);
 const itemModal = ref(null);
 
-onMounted(() => {
-  console.log(itemModal.value);
-});
-
 itemModal.value;
 
 if (props.create) {
@@ -274,7 +269,6 @@ const instanceItemDimension = ref({
 });
 
 const toggleEditMode = () => {
-  console.log(editMode.value);
   editMode.value = !editMode.value;
 };
 
@@ -288,8 +282,6 @@ const handleModalClose = () => {
   editMode.value = false;
   itemModal.value.close();
 };
-
-// console.log(item);
 </script>
 
 <style></style>

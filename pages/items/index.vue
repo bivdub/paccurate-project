@@ -1,6 +1,5 @@
 <template>
   <div v-if="items && state.listItems" class="container mx-auto flex flex-col">
-    {{ state.listItems }}
     <div class="text-center flex flex-row justify-center pt-8">
       <h1>Inventory</h1>
     </div>
@@ -38,7 +37,6 @@ import type { Item } from '~/types/types';
 
 let { items } = useItems();
 const searchTerm = ref('');
-// const listItems = ref([...items.value]);
 const state = reactive({
   listItems: []
 });
@@ -73,9 +71,7 @@ const filterItems = () => {
 };
 
 const updateList = () => {
-  // console.log(listItems.value);
   state.listItems = items.value;
-  // console.log(listItems.value);
 };
 </script>
 
